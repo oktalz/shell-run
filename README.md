@@ -41,6 +41,7 @@ Where output appears is controlled by the `shell-run.outputType` setting (defaul
 | `newTab` | Open a new plain-text tab for each run |
 | `outputChannel` | Append to the **Shell Run** Output panel |
 | `notification` | Show a VS Code notification (truncated at 500 characters) |
+| `terminal` | Run in the integrated terminal (process stays alive) |
 
 ### Per-script output override
 

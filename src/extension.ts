@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { exec, ExecException } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -67,7 +67,7 @@ function resolveShInterpreter(filePath: string): string {
     return 'sh';
 }
 
-const OUTPUT_TYPES = ['tab', 'newTab', 'outputChannel', 'notification'];
+const OUTPUT_TYPES = ['tab', 'newTab', 'outputChannel', 'notification', 'terminal'];
 
 function resolveOutputType(filePath: string): string {
     try {
@@ -109,10 +109,17 @@ function runScript(uri: vscode.Uri | undefined, args?: string) {
 
     const outputType = resolveOutputType(filePath);
 
+    if (outputType === 'terminal') {
+        const terminal = vscode.window.createTerminal({ name: path.basename(filePath), cwd: dir });
+        terminal.show();
+        terminal.sendText(command);
+        return;
+    }
+
     const showInfo = vscode.workspace.getConfiguration('shell-run').get<boolean>('showScriptInfo', false);
 
-    exec(command, { cwd: dir }, async (error, stdout, stderr) => {
-        const cleanStdout = stdout.split('\n').filter(l => !l.includes('shell-run:output:')).join('\n');
+    exec(command, { cwd: dir }, async (error: ExecException | null, stdout: string, stderr: string) => {
+        const cleanStdout = stdout.split('\n').filter((l: string) => !l.includes('shell-run:output:')).join('\n');
         const body = [stderr ? `[stderr]\n${stderr}` : '', cleanStdout].filter(Boolean).join('\n')
             || (error ? `Error: ${error.message}` : '(no output)');
         const header = `# ${command}\n# cwd: ${dir}\n\n`;

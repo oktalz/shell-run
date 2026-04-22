@@ -7,7 +7,7 @@
   },
   "publisher": "ZlatkoBratkovic",
   "license": "ISC",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -32,13 +32,15 @@
             "tab",
             "newTab",
             "outputChannel",
-            "notification"
+            "notification",
+            "terminal"
           ],
           "enumDescriptions": [
             "Reuse a single output tab",
             "Open a new tab for each execution",
             "Show output in the Output panel",
-            "Show output as a VS Code notification"
+            "Show output as a VS Code notification",
+            "Run in the integrated terminal (process stays alive)"
           ]
         },
         "shell-run.showScriptInfo": {
