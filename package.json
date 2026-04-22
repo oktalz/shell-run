@@ -1,0 +1,120 @@
+{
+  "name": "shell-run",
+  "displayName": "Shell Run",
+  "description": "Execute shell scripts (.sh, .bat, .cmd, .ps1) from context menu, CodeLens, or right-click in their folder",
+  "repository": {
+    "url": "https://github.com/oktalz/shell-run"
+  },
+  "publisher": "ZlatkoBratkovic",
+  "license": "ISC",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:shellscript",
+    "onLanguage:bat",
+    "onLanguage:powershell"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Shell Run",
+      "properties": {
+        "shell-run.outputType": {
+          "type": "string",
+          "default": "notification",
+          "description": "Determines where the output of shell script execution is displayed.",
+          "enum": [
+            "tab",
+            "newTab",
+            "outputChannel",
+            "notification"
+          ],
+          "enumDescriptions": [
+            "Reuse a single output tab",
+            "Open a new tab for each execution",
+            "Show output in the Output panel",
+            "Show output as a VS Code notification"
+          ]
+        },
+        "shell-run.showScriptInfo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prepend the command and working directory as a comment in the output."
+        },
+        "shell-run.interpreter": {
+          "type": "string",
+          "default": "auto",
+          "description": "Shell interpreter to use. 'auto' reads the shebang line from the script and falls back to 'sh'.",
+          "enum": [
+            "auto",
+            "sh",
+            "bash"
+          ],
+          "enumDescriptions": [
+            "Read interpreter from shebang (#!), fall back to sh",
+            "Always use sh",
+            "Always use bash"
+          ]
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "shell-run.execute",
+        "title": "Run: Execute",
+        "icon": "$(play)"
+      },
+      {
+        "command": "shell-run.executeWithArgs",
+        "title": "Run: Execute with Args",
+        "icon": "$(play-circle)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "shell-run.execute",
+          "when": "resourceExtname == .sh || resourceExtname == .bat || resourceExtname == .cmd || resourceExtname == .ps1",
+          "group": "shell_run@1"
+        },
+        {
+          "command": "shell-run.executeWithArgs",
+          "when": "resourceExtname == .sh || resourceExtname == .bat || resourceExtname == .cmd || resourceExtname == .ps1",
+          "group": "shell_run@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "shell-run.execute",
+          "when": "resourceExtname == .sh || resourceExtname == .bat || resourceExtname == .cmd || resourceExtname == .ps1",
+          "group": "shell_run@1"
+        },
+        {
+          "command": "shell-run.executeWithArgs",
+          "when": "resourceExtname == .sh || resourceExtname == .bat || resourceExtname == .cmd || resourceExtname == .ps1",
+          "group": "shell_run@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "22.x",
+    "@types/vscode": "^1.104.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^4.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/DEV/k8s-comands/**)",
+      "Bash(grep -E \"package.json|\\\\.ts$|\\\\.js$|README\")"
+    ],
+    "additionalDirectories": [
+      "C:\\DEV\\shell-run"
+    ]
+  }
+}
