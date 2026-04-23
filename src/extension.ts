@@ -84,17 +84,21 @@ function resolveOutputType(filePath: string): string {
     return vscode.workspace.getConfiguration('shell-run').get<string>('outputType', 'notification');
 }
 
-function buildCommand(filePath: string, args?: string): string {
+function quote(s: string): string {
+    return /^[\w.\-]+$/.test(s) ? s : `"${s}"`;
+}
+
+function buildCommand(filePath: string, args?: string, useBasename = false): string {
+    const target = useBasename ? path.basename(filePath) : filePath;
     const ext = path.extname(filePath).toLowerCase();
     const argsStr = args ? ` ${args}` : '';
     if (ext === '.bat' || ext === '.cmd') {
-        return `cmd /c "${filePath}"${argsStr}`;
+        return `cmd /c ${quote(target)}${argsStr}`;
     }
     if (ext === '.ps1') {
-        return `powershell -ExecutionPolicy Bypass -File "${filePath}"${argsStr}`;
+        return `powershell -ExecutionPolicy Bypass -File ${quote(target)}${argsStr}`;
     }
-    // .sh — honour shebang or interpreter setting
-    return `${resolveShInterpreter(filePath)} "${filePath}"${argsStr}`;
+    return `${resolveShInterpreter(filePath)} ${quote(target)}${argsStr}`;
 }
 
 function runScript(uri: vscode.Uri | undefined, args?: string) {
@@ -112,7 +116,7 @@ function runScript(uri: vscode.Uri | undefined, args?: string) {
     if (outputType === 'terminal') {
         const terminal = vscode.window.createTerminal({ name: path.basename(filePath), cwd: dir });
         terminal.show();
-        terminal.sendText(command);
+        terminal.sendText(buildCommand(filePath, args, true));
         return;
     }
 
